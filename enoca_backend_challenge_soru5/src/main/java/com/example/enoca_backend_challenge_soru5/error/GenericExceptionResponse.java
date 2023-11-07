@@ -1,4 +1,4 @@
-package error;
+package com.example.enoca_backend_challenge_soru5.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

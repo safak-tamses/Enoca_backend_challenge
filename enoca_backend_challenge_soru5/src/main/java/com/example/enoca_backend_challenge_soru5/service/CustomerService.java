@@ -2,15 +2,11 @@ package com.example.enoca_backend_challenge_soru5.service;
 
 import com.example.enoca_backend_challenge_soru5.generic.GenericResponse;
 import com.example.enoca_backend_challenge_soru5.model.Customer;
-import com.example.enoca_backend_challenge_soru5.model.DTO.CustomerCreateRequest;
-import com.example.enoca_backend_challenge_soru5.model.DTO.CustomerCreateResponse;
-import com.example.enoca_backend_challenge_soru5.model.DTO.CustomerShowResponse;
-import com.example.enoca_backend_challenge_soru5.model.DTO.MessageResponse;
+import com.example.enoca_backend_challenge_soru5.model.DTO.*;
 import com.example.enoca_backend_challenge_soru5.repository.CustomerRepository;
-import error.CustomerCreationException;
-import error.CustomerDatebaseException;
-import error.CustomerNotFoundException;
-import error.OrderNotFoundException;
+import com.example.enoca_backend_challenge_soru5.error.CustomerCreationException;
+import com.example.enoca_backend_challenge_soru5.error.CustomerDatebaseException;
+import com.example.enoca_backend_challenge_soru5.error.CustomerNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +56,6 @@ public class CustomerService {
         }
     }
 
-
     public GenericResponse<List<CustomerShowResponse>> showAllCustomers() {
         try {
             List<CustomerShowResponse> customerShowResponseList = customerRepository.findAll().stream()
@@ -73,6 +68,23 @@ public class CustomerService {
                     .collect(Collectors.toList());
             return new GenericResponse<>(customerShowResponseList, Boolean.TRUE);
         } catch (Exception e) {
+            throw new CustomerNotFoundException();
+        }
+    }
+
+
+    public GenericResponse<CustomerUpdateResponse> updateCustomer(CustomerUpdateRequest customerUpdateRequest, Long customerId) {
+        try {
+            Customer currentCustomer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
+            currentCustomer.setAge(customerUpdateRequest.getAge());
+            currentCustomer.setName(customerUpdateRequest.getName());
+            customerRepository.save(currentCustomer);
+            return new GenericResponse<>(new CustomerUpdateResponse(
+                    currentCustomer.getName(),
+                    currentCustomer.getAge(),
+                    "Customer updated successfully."
+            ), Boolean.TRUE);
+        } catch (Exception e){
             throw new CustomerNotFoundException();
         }
     }

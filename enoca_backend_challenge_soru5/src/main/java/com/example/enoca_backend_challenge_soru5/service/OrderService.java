@@ -1,11 +1,11 @@
 package com.example.enoca_backend_challenge_soru5.service;
 
+import com.example.enoca_backend_challenge_soru5.error.*;
 import com.example.enoca_backend_challenge_soru5.generic.GenericResponse;
 import com.example.enoca_backend_challenge_soru5.model.Customer;
 import com.example.enoca_backend_challenge_soru5.model.DTO.*;
 import com.example.enoca_backend_challenge_soru5.model.Order;
 import com.example.enoca_backend_challenge_soru5.repository.OrderRepository;
-import error.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +66,25 @@ public class OrderService {
             return new GenericResponse<>(orderShowResponseList, Boolean.TRUE);
         } catch (Exception e) {
             throw new CustomerNotFoundException();
+        }
+    }
+
+    public GenericResponse<OrderUpdateResponse> updateOrder(OrderUpdateRequest orderUpdateRequest, Long orderId) {
+        try {
+            Order currentOrder = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+            Customer updatedCustomer = customerService.getCustomerById(orderUpdateRequest.getCustomerId());
+            currentOrder.setCustomer(updatedCustomer);
+            currentOrder.setTotalPrice(orderUpdateRequest.getTotalPrice());
+            currentOrder.setCreateDate(new Date());
+            orderRepository.save(currentOrder);
+            return new GenericResponse<>(new OrderUpdateResponse(
+                    currentOrder.getCustomer().getName(),
+                    currentOrder.getCreateDate(),
+                    currentOrder.getTotalPrice(),
+                    "Order updated successfully."
+            ), Boolean.TRUE);
+        } catch (Exception e) {
+            throw new OrderNotFoundException();
         }
     }
 

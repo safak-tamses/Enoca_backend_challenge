@@ -2,6 +2,8 @@ package com.example.enoca_backend_challenge_soru5.controller;
 
 import com.example.enoca_backend_challenge_soru5.generic.GenericResponse;
 import com.example.enoca_backend_challenge_soru5.model.DTO.CustomerCreateRequest;
+import com.example.enoca_backend_challenge_soru5.model.DTO.CustomerUpdateRequest;
+import com.example.enoca_backend_challenge_soru5.model.DTO.OrderUpdateRequest;
 import com.example.enoca_backend_challenge_soru5.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,11 @@ public class CustomerController {
     @GetMapping("/show/all")
     public ResponseEntity<GenericResponse> customerShowAll() {
         return new ResponseEntity<>(customerService.showAllCustomers(), HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{customerId}")
+    public ResponseEntity<GenericResponse> customerUpdate(@PathVariable Long customerId, @RequestBody CustomerUpdateRequest customerUpdateRequest) {
+        return new ResponseEntity<>(customerService.updateCustomer(customerUpdateRequest, customerId), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

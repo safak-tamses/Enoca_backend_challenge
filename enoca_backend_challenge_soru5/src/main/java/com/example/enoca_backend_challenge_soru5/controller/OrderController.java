@@ -2,6 +2,7 @@ package com.example.enoca_backend_challenge_soru5.controller;
 
 import com.example.enoca_backend_challenge_soru5.generic.GenericResponse;
 import com.example.enoca_backend_challenge_soru5.model.DTO.OrderCreateRequest;
+import com.example.enoca_backend_challenge_soru5.model.DTO.OrderUpdateRequest;
 import com.example.enoca_backend_challenge_soru5.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,6 +33,11 @@ public class OrderController {
         return new ResponseEntity<>(orderService.showAllOrders(), HttpStatus.OK);
     }
 
+    @PutMapping("/update/{orderId}")
+    public ResponseEntity<GenericResponse> orderUpdate(@PathVariable Long orderId, @RequestBody OrderUpdateRequest orderUpdateRequest) {
+        return new ResponseEntity<>(orderService.updateOrder(orderUpdateRequest, orderId), HttpStatus.OK);
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<GenericResponse> customerDelete(@PathVariable Long id) {
         return new ResponseEntity<>(orderService.deleteOrder(id), HttpStatus.OK);
@@ -43,7 +49,7 @@ public class OrderController {
     }
 
     @GetMapping("/show/after-date")
-    public ResponseEntity<GenericResponse> customerShowByAfterDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  Date date) {
+    public ResponseEntity<GenericResponse> customerShowByAfterDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date) {
         return new ResponseEntity<>(orderService.listOrdersCreatedAfterDate(date), HttpStatus.OK);
     }
 }
